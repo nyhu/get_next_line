@@ -17,13 +17,13 @@
 #include <stdlib.h>
 #define BUF_SIZE 512
 
-typedef struct		s_list
+typedef struct		s_line
 {
 	char			data[BUF_SIZE];
 	int				ret;
 	int				fd;
 	struct s_list	*next;
 	struct s_list	*pfd;
-}					t_list;
+}					t_line;
 
 #endif
