@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tboos <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/09 14:23:09 by tboos             #+#    #+#             */
-/*   Updated: 2016/02/09 17:57:29 by tboos            ###   ########.fr       */
+/*   Created: 2015/11/04 18:24:51 by tboos             #+#    #+#             */
+/*   Updated: 2015/11/05 00:11:36 by tboos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#define BUF_SIZE 512
-
-typedef struct		s_line
+void				*ft_memmove(void *dest, const void *src, size_t n)
 {
-	char			data[BUF_SIZE + 1];
-	int				ret;
-	int				fd;
-	struct s_line	*next;
-}					t_line;
+	unsigned char	*tmp;
+	size_t			i;
 
-#endif
+	tmp = (unsigned char *)malloc(sizeof(unsigned char) * n);
+	i = 0;
+	while (i < n)
+	{
+		tmp[i] = ((unsigned char *)src)[i];
+		i++;
+	}
+	i = 0;
+	while (i < n)
+	{
+		((unsigned char *)dest)[i] = tmp[i];
+		i++;
+	}
+	free(tmp);
+	return (dest);
+}

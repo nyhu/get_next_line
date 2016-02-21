@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tboos <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/09 14:23:09 by tboos             #+#    #+#             */
-/*   Updated: 2016/02/09 17:57:29 by tboos            ###   ########.fr       */
+/*   Created: 2015/11/04 18:24:51 by tboos             #+#    #+#             */
+/*   Updated: 2016/01/19 21:02:29 by tboos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#define BUF_SIZE 512
-
-typedef struct		s_line
+t_list	*ft_lstnew(void const *content, size_t content_size)
 {
-	char			data[BUF_SIZE + 1];
-	int				ret;
-	int				fd;
-	struct s_line	*next;
-}					t_line;
+	t_list	*new;
 
-#endif
+	new = (t_list *)malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+	if (!content)
+	{
+		new->content_size = 0;
+		new->content = NULL;
+	}
+	else
+	{
+		new->content_size = content_size;
+		new->content = ft_memmove(ft_memalloc(content_size),
+				content, content_size);
+	}
+	new->next = NULL;
+	return (new);
+}

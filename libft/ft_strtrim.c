@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tboos <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/09 14:23:09 by tboos             #+#    #+#             */
-/*   Updated: 2016/02/09 17:57:29 by tboos            ###   ########.fr       */
+/*   Created: 2015/11/04 18:24:51 by tboos             #+#    #+#             */
+/*   Updated: 2015/11/05 00:11:36 by tboos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#define BUF_SIZE 512
-
-typedef struct		s_line
+char	*ft_strtrim(char const *s)
 {
-	char			data[BUF_SIZE + 1];
-	int				ret;
-	int				fd;
-	struct s_line	*next;
-}					t_line;
+	char	*cpy;
+	size_t	i;
 
-#endif
+	while (*s == ' ' || *s == '\t' || *s == '\n')
+		s++;
+	i = 0;
+	while (s[i])
+		i++;
+	while (i > 0 && (s[i - 1] == ' ' || s[i - 1] == '\t' || s[i - 1] == '\n'))
+		i--;
+	if (i == 0)
+		return (NULL);
+	cpy = ft_strnew(i);
+	if (!cpy)
+		return (NULL);
+	cpy = ft_strncpy(cpy, s, i);
+	cpy[i] = '\0';
+	return (cpy);
+}

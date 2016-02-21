@@ -12,67 +12,90 @@
 
 #include "get_next_line.h"
 
-t_line	*ft_create_line(int ret, char *tmp, int fd)
+static t_line	*ft_create_line(int ret, char *tmp, int fd)
 {
 	t_line			*new;
 
-	if (!ret || !(new = (t_line *)malloc(sizeof(t_line))))
+	if (!(new = (t_line *)malloc(sizeof(t_line))))
 		return (NULL);
 	new->ret = ret;
 	new->fd = fd;
-	while (ret >= 0)
+	new->data[ret] = '\0';
+	while (ret > 0)
 	{
 		ret--;
 		(new->data)[ret] = tmp[ret];
 	}
 	new->next = NULL;
-	new->pfd = NULL;
 	return (new);
 }
 
-void	ft_retromove(t_line *rabbit)
-{
-
-}
-
-char	*ft_dupcat(char *tab, char *str)
-{
-	
-}
-
-char	*ft_check_backn(t_line **begin, t_line *rabbit, int fd, char *result)
+void			ft_retromove(t_line *rabbit, int n)
 {
 	int		i;
 
 	i = 0;
-	while (i < rabbit->ret && rabbit->data[i] != '\n')
+	while (n <= rabbit->ret)
+	{
+		rabbit->data[i] = rabbit->data[n];
 		i++;
-	result = ft_dupcat(
-
+		n++;
+	}
+	rabbit->ret = n - i;
 }
 
-char	*get_next_line(int fd)
+char			*ft_dupcat(char *tab, char *str)
+{
+	
+}
+
+static char		*ft_fill(t_line **begin, t_line *rabbit, int fd, char **line)
+{
+	t_line	*memo;
+	int		i;
+
+	memo = *begin;
+	if (!(rabbit->ret))
+	{
+		if (*begin == rabbit)
+		{
+			*begin = (*begin)->next;
+			free(memo);
+			return (0);
+		}
+		while (memo->next != rabbit)
+			memo = memo->next;
+		memo->next = rabbit->next;
+		free(rabbit);
+		return (0);
+	}
+	i = 0;
+	while (i < rabbit->ret && rabbit->data[i] && rabbit->data[i] != '\n')
+		i++;
+	rabbit->data[i] = '\0';
+	*line = ft_strdup(rabbit->data);
+	ft_retromove(rabbit, i);
+	return 
+}
+
+int				get_next_line(int fd , char **line)
 {
 	static t_line	*begin = NULL;
-	char			tmp[BUF_SIZE];
 	t_line			*rabbit;
-	char			*result;
-	
-	result = NULL;
-	if (fd < 0)
-		return (NULL);
-	else if (!begin)
-		if (!(begin = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd)))
-			return (NULL);
+	char			tmp[BUF_SIZE];
+
+	if (fd < 0 || (!begin
+		&& !(begin = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd))))
+		return (-1);
 	rabbit = begin;
-	if (rabbit->fd != fd)
+	else if (rabbit->fd != fd)
 	{
-		while (rabbit->pfd && rabbit->pfd->fd != fd)
+		while (rabbit->next && rabbit->next->fd != fd)
 			rabbit = rabbit->pfd;
-		if (!(rabbit->pfd)
-			if (!(rabbit->pfd = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd)))
-				return (NULL);
-		rabbit = rabbit->pfd;
+		if (!(rabbit->next)
+			if (!(rabbit->next = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd)))
+				return (-1);
+		rabbit = rabbit->next;
 	}
-	return (ft_check_backn(&begin, rabbit, fd, result);
+	return (ft_fill(&begin, rabbit, fd, line);
 }

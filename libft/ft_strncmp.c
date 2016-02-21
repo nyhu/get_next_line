@@ -1,28 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tboos <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/02/09 14:23:09 by tboos             #+#    #+#             */
-/*   Updated: 2016/02/09 17:57:29 by tboos            ###   ########.fr       */
+/*   Created: 2015/11/04 18:24:51 by tboos             #+#    #+#             */
+/*   Updated: 2016/01/16 17:17:34 by tboos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "libft.h"
 
-#include <unistd.h>
-#include <stdlib.h>
-#define BUF_SIZE 512
-
-typedef struct		s_line
+int		ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	char			data[BUF_SIZE + 1];
-	int				ret;
-	int				fd;
-	struct s_line	*next;
-}					t_line;
+	size_t	i;
 
-#endif
+	i = 0;
+	while (s1[i] == s2[i] && s1[i] && i < (n - 1))
+		i++;
+	return (s1[i] - s2[i]);
+}
