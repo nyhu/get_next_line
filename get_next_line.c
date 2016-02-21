@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
 #include "get_next_line.h"
 
 static t_line	*ft_create_line(int ret, char *tmp, int fd)
@@ -30,29 +31,46 @@ static t_line	*ft_create_line(int ret, char *tmp, int fd)
 	return (new);
 }
 
-void			ft_retromove(t_line *rabbit, int n)
+static void		ft_dupline(char **line, char *str);
 {
-	int		i;
+	char			*tmp;
+
+	if (!(*line))
+		return (&(ft_strdup(str)));
+	tmp = *line;
+	*line = (char *)malloc(ft_strlen(tmp) + ft_strlen(str) + 1);
+	*line = ft_strcpy(*line, tmp);
+	free(tmp);
+	*line = ft_strcat(*line, str);
+}
+
+static int		ft_retromove(char **line, t_line *rabbit)
+{
+	int				i;
+	int				j;
 
 	i = 0;
-	while (n <= rabbit->ret)
-	{
-		rabbit->data[i] = rabbit->data[n];
+	while (i < rabbit->ret && rabbit->data[i] != '\n')
 		i++;
-		n++;
+	rabbit->data[i] = '\0';
+	ft_dupline(line, rabbit->data);
+	j = 0;
+	while (i <= rabbit->ret)
+	{
+		rabbit->data[j] = rabbit->data[i];
+		i++;
+		j++;
 	}
-	rabbit->ret = n - i;
+	rabbit->ret = rabbit->ret - i;
+	if (!(rabbit->ret))
+		return (1);
+	return (0);
 }
 
-char			*ft_dupcat(char *tab, char *str)
+static int		*ft_fill(t_line **begin, t_line *rabbit, int fd, char **line)
 {
-	
-}
-
-static char		*ft_fill(t_line **begin, t_line *rabbit, int fd, char **line)
-{
-	t_line	*memo;
-	int		i;
+	t_line			*memo;
+	int				i;
 
 	memo = *begin;
 	if (!(rabbit->ret))
@@ -69,13 +87,13 @@ static char		*ft_fill(t_line **begin, t_line *rabbit, int fd, char **line)
 		free(rabbit);
 		return (0);
 	}
-	i = 0;
-	while (i < rabbit->ret && rabbit->data[i] && rabbit->data[i] != '\n')
-		i++;
-	rabbit->data[i] = '\0';
-	*line = ft_strdup(rabbit->data);
-	ft_retromove(rabbit, i);
-	return 
+	*line = NULL;
+	while ((i = ft_retromove(line, rabbit)))
+	{
+		rabbit->ret = read(fd, rabbit->data, BUF_SIZE);
+		rabbit->data[BUF_SIZE] = '\0';
+	}
+	return (1);
 }
 
 int				get_next_line(int fd , char **line)
@@ -88,11 +106,11 @@ int				get_next_line(int fd , char **line)
 		&& !(begin = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd))))
 		return (-1);
 	rabbit = begin;
-	else if (rabbit->fd != fd)
+	if (rabbit->fd != fd)
 	{
 		while (rabbit->next && rabbit->next->fd != fd)
-			rabbit = rabbit->pfd;
-		if (!(rabbit->next)
+			rabbit = rabbit->next;
+		if (!(rabbit->next))
 			if (!(rabbit->next = ft_create_line(read(fd, tmp, BUF_SIZE), tmp, fd)))
 				return (-1);
 		rabbit = rabbit->next;
