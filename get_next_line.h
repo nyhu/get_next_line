@@ -16,12 +16,14 @@
 #include <unistd.h>
 #include <stdlib.h>
 #define BUF_SIZE 512
+#define READ read(fd, tmp, BUF_SIZE)
 
 typedef struct		s_line
 {
-	char			data[BUF_SIZE + 1];
+	char			data[BUF_SIZE];
 	int				ret;
 	int				fd;
+	int				cur;
 	struct s_line	*next;
 }					t_line;
 
