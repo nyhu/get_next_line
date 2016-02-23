@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #define BUF_SIZE 512
 #define READ read(fd, tmp, BUF_SIZE)
+#define MALLOC (t_line *)ft_memalloc(sizeof(t_line))
 
 typedef struct		s_line
 {

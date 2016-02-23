@@ -13,33 +13,31 @@
 #include "libft.h"
 #include "get_next_line.h"
 
-static int			ft_initl(t_line **begin, t_line *next, int fd)
+static int			ft_find_fd(t_line **begin, int fd)
 {
 	char			tmp[BUF_SIZE];
 	int				ret;
-
-	if (!(ret = READ))
-		return (0);
-	if (!(*begin) && !(*begin = (t_line *)ft_memalloc(sizeof(t_line))))
-		return (-1);
-	(*begin)->data = ft_memcpy((*begin)->data, tmp, BUF_SIZE);
-	(*begin)->ret = ret;
-	(*begin)->fd = fd;
-	(*begin)->next = (next ? next : *begin);
-	return (1);
-}
-
-static int			ft_findfd(t_line **begin, int fd)
-{
-	int				test;
 	t_line			*next;
 
 	next = *begin;
-	if (!(*begin) && (test = ft_initl(begin, NULL, fd)) <= 0)
-		return (test);
-	while ((*begin)->fd != fd && (*begin)->next != next)
+	while (begin && (*begin)->fd != fd && (*begin)->next != next)
 		*begin = (*begin)->next;
-	if ((*begin)->fd != fd && (test = ft_initl(begin)
+	if ((*begin) && (*begin)->fd == fd)
+		return (1);
+	if (!(ret = READ))
+		return (0);
+	if (!(*begin) && !(*begin = MALLOC))
+		return (-1);
+	else if ((*begin)->fd != fd && !((*begin)->next = MALLOC))
+		return (-1);
+	if (next)
+		*begin = (*begin)->next;
+	(*begin)->data = ft_memcpy((*begin)->data, tmp, BUF_SIZE);
+	(*begin)->ret = ret;
+	(*begin)->fd = fd;
+	(*begin)->cur = 0;
+	(*begin)->next = (next ? next : *begin);
+	return (1);
 }
 
 int				get_next_line(int fd , char **line)
