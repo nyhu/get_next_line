@@ -13,18 +13,19 @@
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-#include <unistd.h>
-#include <stdlib.h>
 #define BUF_SIZE 512
-#define READ read(fd, tmp, BUF_SIZE)
+#define TMP_READ read(fd, tmp, BUF_SIZE)
+#define STRUCT_READ read(fd, begin->data, BUF_SIZE)
 #define MALLOC (t_line *)ft_memalloc(sizeof(t_line))
+#define RET begin->ret
+#define DATA begin->data
+#define NCHR (ft_memchr(DATA, '\n', RET) - DATA)
 
 typedef struct		s_line
 {
-	char			data[BUF_SIZE];
+	char			data[BUF_SIZE + 1];
 	int				ret;
 	int				fd;
-	int				cur;
 	struct s_line	*next;
 }					t_line;
 
