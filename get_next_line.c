@@ -18,12 +18,16 @@ static int			ft_free_line(t_line **begin, t_line *next)
 	while (next->next != *begin)
 		next = next->next;
 	if (next == *begin)
+	{
 		free(*begin);
 		*begin = NULL;
+	}
 	else
+	{
 		next->next = *begin->next;
 		free(*begin)
 		*begin = next;
+	}
 	return (0);
 }
 
@@ -58,7 +62,8 @@ int					get_next_line(int fd , char **line)
 	int				test;
 	char			*tmp;
 
-	if (fd < 0 || (test = ft_find_fd(&begin, begin, fd)) <= 0)
+	if (fd < 0 || (test = read(fd, tmp, 0)) < 0
+		|| (test = ft_find_fd(&begin, begin, fd)) <= 0)
 		return ((fd < 0 ? -1 : test));
 	test = NCHR;
 	*line = ft_strdup(DATA);
