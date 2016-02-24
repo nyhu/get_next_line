@@ -15,18 +15,19 @@
 
 static int			ft_free_line(t_line **begin, t_line *next)
 {
-	while (next->next != *begin)
-		next = next->next;
+	while ((*begin)->next != next)
+		*begin = (*begin)->next;
 	if (next == *begin)
 	{
-		free(*begin);
+		free(next->data);
+		free(next);
 		*begin = NULL;
 	}
 	else
 	{
-		next->next = *begin->next;
-		free(*begin)
-		*begin = next;
+		(*begin)->next = next->next;
+		free(next->data);
+		free(next);
 	}
 	return (0);
 }
@@ -49,7 +50,7 @@ static int			ft_find_fd(t_line **begin, t_line *next, int fd)
 		return (-1);
 	if (next)
 		*begin = (*begin)->next;
-	(*begin)->data = ft_memcpy((*begin)->data, tmp, BUF_SIZE + 1);
+	(*begin)->data = ft_memcpy(ft_memalloc(BUF_SIZE + 1), tmp, BUF_SIZE);
 	(*begin)->ret = ret;
 	(*begin)->fd = fd;
 	(*begin)->next = (next ? next : *begin);
@@ -62,7 +63,7 @@ int					get_next_line(int fd , char **line)
 	int				test;
 	char			*tmp;
 
-	if (fd < 0 || (test = read(fd, tmp, 0)) < 0
+	if (fd < 0 || (test = read(fd, *line, 0)) < 0
 		|| (test = ft_find_fd(&begin, begin, fd)) <= 0)
 		return ((fd < 0 ? -1 : test));
 	test = NCHR;
@@ -70,12 +71,12 @@ int					get_next_line(int fd , char **line)
 	ft_bzero(DATA, BUF_SIZE + 1);
 	tmp = *line;
 	while (test < 0 && (RET = STRUCT_READ) && (test = NCHR) < 0
-		&& (tmp = *line) && (*line = ft_strjoin(result, DATA)))
+		&& (tmp = *line) && (*line = ft_strjoin(*line, DATA)))
 		free(tmp);
 	DATA[(test < 0 ? RET : test)] = '\0';
 	if (!(*line))
 		return (-1);
 	if (RET && test > 0 && (DATA = ft_memmove(DATA, DATA + test, RET + 1 - test)))
 		RET = RET - test;
-	return ((RET ? 1 : ft_free_line(&begin, begin->next));
+	return ((RET ? 1 : ft_free_line(&begin, begin)));
 }

@@ -19,11 +19,11 @@
 #define MALLOC (t_line *)ft_memalloc(sizeof(t_line))
 #define RET begin->ret
 #define DATA begin->data
-#define NCHR (ft_memchr(DATA, '\n', RET) - DATA)
+#define NCHR ((char *)(ft_memchr(DATA, '\n', RET)) - DATA)
 
 typedef struct		s_line
 {
-	char			data[BUF_SIZE + 1];
+	char			*data;
 	int				ret;
 	int				fd;
 	struct s_line	*next;
