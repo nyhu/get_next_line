@@ -6,12 +6,11 @@
 /*   By: tboos <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/09 14:30:52 by tboos             #+#    #+#             */
-/*   Updated: 2016/02/25 02:50:00 by tboos            ###   ########.fr       */
+/*   Updated: 2016/02/25 06:30:24 by tboos            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static int			ft_free_line(t_line **begin, t_line *next)
 {
@@ -32,18 +31,20 @@ static int			ft_free_line(t_line **begin, t_line *next)
 	return (1);
 }
 
-static int			ft_find_fd(t_line **begin, t_line *next, int fd)
+static int			ft_findread(t_line **begin, t_line *next, int fd, int mode)
 {
 	char			tmp[BUFF_SIZE + 1];
 	int				ret;
 
 	while (*begin && (*begin)->fd != fd && (*begin)->next != next)
 		*begin = (*begin)->next;
-	if ((*begin) && (*begin)->fd == fd)
+	if (mode == FIND && (*begin) && (*begin)->fd == fd)
 		return (1);
-	if (!(ret = TMP_READ))
+	if (!(ret = read(fd, tmp, BUFF_SIZE)))
 		return (0);
 	tmp[ret] = '\0';
+	if (mode == READ && ft_strcpy((*begin)->data, tmp))
+		return (ret);
 	if (!(*begin) && !(*begin = MALLOC))
 		return (-1);
 	else if ((*begin)->fd != fd && !((*begin)->next = MALLOC))
@@ -81,14 +82,15 @@ int					get_next_line(int const fd, char **line)
 	int				test;
 	char			*tmp;
 
-	if (fd < 0 || (test = read(fd, *line, 0)) < 0
-		|| (test = ft_find_fd(&begin, begin, fd)) <= 0)
+	test = -1;
+	if (fd < 0 || !line || read(fd, *line, 0) < 0
+		|| (test = ft_findread(&begin, begin, fd, FIND)) <= 0)
 		return ((fd < 0 ? -1 : test));
 	*line = ft_memalloc(1);
 	while (*line && !(test = ft_strcut(DATA, '\n', RET))
 		&& (tmp = *line)
 		&& (*line = ft_strjoin(*line, DATA))
-		&& (RET = STRUCT_READ))
+		&& (RET = ft_findread(&begin, begin, fd, READ)))
 		free(tmp);
 	if (!(*line))
 		return (-1);
