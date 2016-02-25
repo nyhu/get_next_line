@@ -20,10 +20,14 @@ int			main(int ac, char **av)
 			ft_putnbr(get_next_line(fd1, &line));
 			ft_putstr("\n");
 			ft_putstr(line);
+			free(line);
+			line = NULL;
 			ft_putstr("\n");
 			ft_putnbr(get_next_line(fd2, &line));
 			ft_putstr("\n");
 			ft_putstr(line);
+			free(line);
+			line = NULL;
 			ft_putstr("\n");
 			ac++;
 		}
